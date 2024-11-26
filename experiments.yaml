@@ -31,13 +31,6 @@
   observation_type: kinematics
   n_agents: 3
   density: medium
-  initial_headway_distance: 40
-
-- algorithm: DQN
-  with_greedy: true
-  observation_type: kinematics
-  n_agents: 3
-  density: medium
   initial_headway_distance: 80
 
 - algorithm: DQN
