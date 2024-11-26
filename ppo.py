@@ -4,6 +4,9 @@ import torch
 import torch.nn as nn
 from gymnasium import spaces
 
+from stable_baselines3.common.logger import configure
+from logger import CustomLogger
+
 from envs import MultiAgentHighwayEnv
 
 
@@ -63,7 +66,12 @@ def train_PPO(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_i
     algorithm_params = {
         "batch_size": 32
     }
-    model = PPO(policy="MlpPolicy", env=multi_agent_env, verbose=1, policy_kwargs=policy_kwargs, tensorboard_log="./logs/PPO", **algorithm_params)
-    model.learn(total_timesteps=total_timesteps, tb_log_name=f"PPO_{exp_id}", progress_bar=True)
+
+    # train the model
+    logger = configure(f"logs/PPO/PPO_{exp_id}", ["csv", "tensorboard"])
+
+    model = PPO(policy="MlpPolicy", env=multi_agent_env, verbose=1, policy_kwargs=policy_kwargs, **algorithm_params)
+    model.set_logger(logger)
+    model.learn(total_timesteps=total_timesteps, progress_bar=True, callback=CustomLogger(model_type='PPO'))
     model.save(path=f"./models/PPO/PPO_{exp_id}")
 

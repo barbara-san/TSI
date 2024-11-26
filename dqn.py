@@ -5,6 +5,9 @@ import torch.nn as nn
 import pickle
 from gymnasium import spaces
 
+from stable_baselines3.common.logger import configure
+from logger import CustomLogger
+
 from envs import MultiAgentHighwayEnv
 
 
@@ -68,7 +71,7 @@ def train_DQN(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_i
         "exploration_initial_eps": 0.9,
         "exploration_final_eps": 0.15,
     }
-    model = DQN(policy="MlpPolicy", env=multi_agent_env, verbose=1, policy_kwargs=policy_kwargs, tensorboard_log="./logs/DQN", **algorithm_params)
+    model = DQN(policy="MlpPolicy", env=multi_agent_env, verbose=1, policy_kwargs=policy_kwargs, **algorithm_params)
 
     # load pre-experience from greedy strategy
     if exp_congig["with_greedy"]:
@@ -84,6 +87,8 @@ def train_DQN(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_i
         del greedy_buffer
 
     # train the model
-    model.learn(total_timesteps=total_timesteps, tb_log_name=f"DQN_{exp_id}", progress_bar=True)
-    model.save(path=f"./models/DQN/DQN_{exp_id}")
+    logger = configure(f"logs/DQN/DQN_{exp_id}", ["csv", "tensorboard"])
+    model.set_logger(logger)
 
+    model.learn(total_timesteps=total_timesteps, progress_bar=True, callback=CustomLogger(model_type='DQN'))
+    model.save(path=f"./models/DQN/DQN_{exp_id}")
