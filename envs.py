@@ -101,7 +101,7 @@ default_config.update({
     "screen_width": 720,
     "screen_height": 240,
 
-    # Environment "physical" configuration
+    # environment "physical" configuration
     "lanes_count": 3,
     "controlled_vehicles": 1,
     "vehicles_count": 30,
@@ -110,7 +110,7 @@ default_config.update({
     "duration": 60,  # seconds
     "ego_spacing": 2,
 
-    # Paper reward values
+    # paper reward values
     "collision_reward": -40,
     "speed_interval_reward": 10, "reward_speed_range": [103/3.6, 120/3.6],
     "headway_reward": 10, "reward_headway_range": [50, 70],

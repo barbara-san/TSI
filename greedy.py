@@ -14,7 +14,7 @@ def greedy_action(env: MultiAgentHighwayEnv):
     max_reward = -np.inf
     max_actions = -1
 
-    #  parallelize action evaluation
+    # parallelize action evaluation
     with ProcessPoolExecutor() as executor:
         # deepcopy of the environment for each action to avoid interference
         futures = [executor.submit(evaluate_actions, deepcopy(env), actions) for actions in range(env.action_space.n)]
