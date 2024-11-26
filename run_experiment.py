@@ -30,7 +30,7 @@ def experiment_config(experiment_id):
 
 
 if __name__ == "__main__":
-    experiment_id = 5
+    experiment_id = 0
     config_dict = experiment_config(experiment_id)
     pprint(config_dict)
 
@@ -42,6 +42,6 @@ if __name__ == "__main__":
     )
 
     train_function = train_DQN if config_dict["algorithm"]=="DQN" else train_PPO
-    train_function(multi_agent_env, total_timesteps=1000, exp_id=f"exp_{experiment_id}", **config_dict)
+    train_function(multi_agent_env, total_timesteps=500_000, exp_id=f"exp_{experiment_id}", **config_dict)
 
 

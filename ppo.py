@@ -64,7 +64,8 @@ def train_PPO(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_i
         )
     )
     algorithm_params = {
-        "batch_size": 32
+        "batch_size": 32,
+        "n_steps": 512
     }
 
     # train the model
