@@ -154,8 +154,9 @@ class MultiAgentHighwayEnv(gym.Env):
         obs, info = self.original_env.reset(**kwargs)
 
         if self.init_headway_distance != None:
+            n_agents = self.n_agents
             for i, vehicle in enumerate(self.original_env.unwrapped.controlled_vehicles):
-                vehicle.position[0] = np.float64(200 - i*self.init_headway_distance)
+                vehicle.position[0] = np.float64(200 - (n_agents-1 - i) * self.init_headway_distance)
 
         return self._flatten_observation(obs), info
 
@@ -198,8 +199,9 @@ def get_env(n_agents=1, image_obs=False, density=2, init_headway_distance=None):
     env = HighwayEnv(config=config, render_mode="rgb_array")
     
     if init_headway_distance != None:
+        n_agents = len(env.unwrapped.controlled_vehicles)
         for i, vehicle in enumerate(env.unwrapped.controlled_vehicles):
-            vehicle.position[0] = np.float64(200 - i*init_headway_distance)
+            vehicle.position[0] = np.float64(200 - (n_agents-1 - i) * init_headway_distance)
 
     return env
 
