@@ -41,7 +41,9 @@ if __name__ == "__main__":
         init_headway_distance=config_dict["initial_headway_distance"],
     )
 
+    device = "auto" ### "cpu" or "auto"
+
     train_function = train_DQN if config_dict["algorithm"]=="DQN" else train_PPO
-    train_function(multi_agent_env, total_timesteps=500_000, exp_id=f"exp_{experiment_id}", **config_dict)
+    train_function(multi_agent_env, total_timesteps=500_000, exp_id=f"exp_{experiment_id}", device=device, **config_dict)
 
 

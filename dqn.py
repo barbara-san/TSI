@@ -50,7 +50,7 @@ class ConvFeatureExtractor(BaseFeaturesExtractor):
         return torch.relu(self.fc(conv_output))
 
 
-def train_DQN(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_id: str, **exp_congig):
+def train_DQN(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_id: str, device: str, **exp_congig):
     multi_agent_env.reset()
 
     channels_per_agent = 1 if not multi_agent_env.image_obs else multi_agent_env.original_env.config["observation"]["observation_config"]["stack_size"]
@@ -71,7 +71,7 @@ def train_DQN(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_i
         "exploration_initial_eps": 0.9,
         "exploration_final_eps": 0.15,
     }
-    model = DQN(policy="MlpPolicy", env=multi_agent_env, verbose=1, policy_kwargs=policy_kwargs, **algorithm_params)
+    model = DQN(policy="MlpPolicy", env=multi_agent_env, verbose=1, policy_kwargs=policy_kwargs, device=device, **algorithm_params)
 
     # load pre-experience from greedy strategy
     if exp_congig["with_greedy"]:

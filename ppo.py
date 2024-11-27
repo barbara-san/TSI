@@ -49,7 +49,7 @@ class ConvFeatureExtractor(BaseFeaturesExtractor):
         return torch.relu(self.fc(conv_output))
 
 
-def train_PPO(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_id: str, **exp_congig):
+def train_PPO(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_id: str, device: str, **exp_congig):
     multi_agent_env.reset()
 
     channels_per_agent = 1 if not multi_agent_env.image_obs else multi_agent_env.original_env.config["observation"]["observation_config"]["stack_size"]
@@ -71,7 +71,7 @@ def train_PPO(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_i
     # train the model
     logger = configure(f"logs/PPO/PPO_{exp_id}", ["csv", "tensorboard"])
 
-    model = PPO(policy="MlpPolicy", env=multi_agent_env, verbose=1, policy_kwargs=policy_kwargs, **algorithm_params)
+    model = PPO(policy="MlpPolicy", env=multi_agent_env, verbose=1, policy_kwargs=policy_kwargs, device=device, **algorithm_params)
     model.set_logger(logger)
     model.learn(total_timesteps=total_timesteps, progress_bar=True, callback=CustomLogger(model_type='PPO'))
     model.save(path=f"./models/PPO/PPO_{exp_id}")
