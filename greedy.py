@@ -62,6 +62,6 @@ def create_greedy_buffer(buffer_size, n_agents):
 
 
 if __name__ == "__main__":
-    buffer_size = 5000
+    buffer_size = 2500
     n_agents = 3
     create_greedy_buffer(buffer_size, n_agents)
