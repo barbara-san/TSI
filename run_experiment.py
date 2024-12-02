@@ -21,7 +21,7 @@ def experiment_config(experiment_id):
 
     config_dict["n_agents"] = exp_dict["n_agents"]
 
-    density_vals = {"low":1, "medium":2, "high":3}
+    density_vals = {"low":0.5, "medium":1, "high":1.5}
     config_dict["density"] = density_vals[exp_dict["density"]]
 
     config_dict["initial_headway_distance"] = exp_dict["initial_headway_distance"]
@@ -30,7 +30,7 @@ def experiment_config(experiment_id):
 
 
 if __name__ == "__main__":
-    experiment_id = 0
+    experiment_id = 2
     config_dict = experiment_config(experiment_id)
     pprint(config_dict)
 

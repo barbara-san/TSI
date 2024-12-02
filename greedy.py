@@ -33,7 +33,7 @@ def greedy_action(env: MultiAgentHighwayEnv):
 def create_greedy_buffer(buffer_size, n_agents):
     buffer = []
 
-    env = get_sb3_env(n_agents=n_agents, image_obs=False, density=2, init_headway_distance=None)
+    env = get_sb3_env(n_agents=n_agents, image_obs=False, density=1, init_headway_distance=None)
     obs, _ = env.reset()
     done = False
   
