@@ -124,14 +124,13 @@ default_config.update({
 
 # custom definition of highway-env multi-agent envrionment that allows easier RL training with SB3
 class MultiAgentHighwayEnv(gym.Env):
-    def __init__(self, original_env, n_agents, image_obs, density, init_headway_distance):
+    def __init__(self, original_env: HighwayEnv, n_agents: int, image_obs: bool, density: float | int):
         super(MultiAgentHighwayEnv, self).__init__()
         
         self.original_env: HighwayEnv = original_env
         self.n_agents = n_agents
         self.image_obs = image_obs
         self.density = density
-        self.init_headway_distance = init_headway_distance
         
         # flatten action 
         n_actions = 1
@@ -152,12 +151,6 @@ class MultiAgentHighwayEnv(gym.Env):
 
     def reset(self, **kwargs):
         obs, info = self.original_env.reset(**kwargs)
-
-        if self.init_headway_distance != None:
-            n_agents = self.n_agents
-            for i, vehicle in enumerate(self.original_env.unwrapped.controlled_vehicles):
-                vehicle.position[0] = np.float64(200 - (n_agents-1 - i) * self.init_headway_distance)
-
         return self._flatten_observation(obs), info
 
     def step(self, action):
@@ -182,7 +175,7 @@ class MultiAgentHighwayEnv(gym.Env):
         self.original_env.render()
 
 
-def get_env(n_agents=1, image_obs=False, density=2, init_headway_distance=None):
+def get_env(n_agents: int = 1, image_obs: bool = False, density: float | int = 1):
     config = default_config.copy()
     config["controlled_vehicles"] = n_agents
     config["vehicles_density"] = density
@@ -197,15 +190,9 @@ def get_env(n_agents=1, image_obs=False, density=2, init_headway_distance=None):
         }
 
     env = HighwayEnv(config=config, render_mode="rgb_array")
-    
-    if init_headway_distance != None:
-        n_agents = len(env.unwrapped.controlled_vehicles)
-        for i, vehicle in enumerate(env.unwrapped.controlled_vehicles):
-            vehicle.position[0] = np.float64(200 - (n_agents-1 - i) * init_headway_distance)
-
     return env
 
 
-def get_sb3_env(n_agents, image_obs, density, init_headway_distance):
-    original_env = get_env(n_agents, image_obs, density, init_headway_distance)
-    return MultiAgentHighwayEnv(original_env, n_agents, image_obs, density, init_headway_distance)
+def get_sb3_env(n_agents: int, image_obs: bool, density: float | int):
+    original_env = get_env(n_agents, image_obs, density)
+    return MultiAgentHighwayEnv(original_env, n_agents, image_obs, density)

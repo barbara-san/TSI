@@ -1,7 +1,7 @@
 from stable_baselines3.common.callbacks import BaseCallback
 
 class CustomLogger(BaseCallback):
-    def __init__(self, verbose=0, model_type='DQN'):
+    def __init__(self, verbose: int = 0, model_type: str = 'DQN'):
         super(CustomLogger, self).__init__(verbose)
         self.verbose = verbose
         self.headway = {}

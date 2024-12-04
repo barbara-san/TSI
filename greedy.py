@@ -6,7 +6,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 from envs import MultiAgentHighwayEnv, get_sb3_env
 
-def evaluate_actions(env: MultiAgentHighwayEnv, action):
+def evaluate_actions(env: MultiAgentHighwayEnv, action: int):
     obs, reward, done, truncated, info = env.step(action)
     return action, reward
 
@@ -24,6 +24,8 @@ def greedy_action(env: MultiAgentHighwayEnv):
             if reward > max_reward:
                 max_reward = reward
                 max_actions = actions
+    
+    executor.shutdown()
 
     return np.asarray([max_actions])
 
@@ -33,7 +35,7 @@ def greedy_action(env: MultiAgentHighwayEnv):
 def create_greedy_buffer(buffer_size, n_agents):
     buffer = []
 
-    env = get_sb3_env(n_agents=n_agents, image_obs=False, density=1, init_headway_distance=None)
+    env = get_sb3_env(n_agents=n_agents, image_obs=False, density=1)
     obs, _ = env.reset()
     done = False
   

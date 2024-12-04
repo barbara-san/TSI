@@ -3,53 +3,53 @@
   observation_type: kinematics
   n_agents: 3
   density: medium
-  initial_headway_distance: null
+
 
 - algorithm: DQN
   with_greedy: true
   observation_type: kinematics
   n_agents: 5
   density: medium
-  initial_headway_distance: null
+
 
 - algorithm: DQN
   with_greedy: true
   observation_type: kinematics
   n_agents: 3
   density: low
-  initial_headway_distance: null
+
 
 - algorithm: DQN
   with_greedy: true
   observation_type: kinematics
   n_agents: 3
   density: high
-  initial_headway_distance: null
+
 
 - algorithm: DQN
   with_greedy: false
   observation_type: kinematics
   n_agents: 3
   density: medium
-  initial_headway_distance: null
+
 
 - algorithm: DQN
   with_greedy: false
   observation_type: image
   n_agents: 3
   density: medium
-  initial_headway_distance: null
+
 
 - algorithm: PPO
   with_greedy: false
   observation_type: kinematics
   n_agents: 3
   density: medium
-  initial_headway_distance: null
+
   
 - algorithm: PPO
   with_greedy: false
   observation_type: image
   n_agents: 3
   density: medium
-  initial_headway_distance: null
+
