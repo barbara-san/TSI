@@ -29,8 +29,6 @@ def experiment_config(experiment_id):
     density_vals = {"low":0.5, "medium":1, "high":1.5}
     config_dict["density"] = density_vals[exp_dict["density"]]
 
-    config_dict["initial_headway_distance"] = exp_dict["initial_headway_distance"]
-
     return config_dict
 
 
@@ -43,7 +41,6 @@ if __name__ == "__main__":
         n_agents=config_dict["n_agents"],
         image_obs=config_dict["image_obs"],
         density=config_dict["density"],
-        init_headway_distance=config_dict["initial_headway_distance"],
     )
 
     device = "auto" ### "cpu" or "auto"
