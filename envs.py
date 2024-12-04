@@ -1,3 +1,7 @@
+"""
+This file aims to recreate an approximate version of the Highway-Env environments used in this paper: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10702268
+"""
+
 import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
@@ -17,6 +21,7 @@ Vehicle.MAX_SPEED = 120 / 3.6 # 120 km/h in m/s
 # parameter "action" is also not used on the original definition
 # original function: https://github.com/Farama-Foundation/HighwayEnv/blob/master/highway_env/envs/highway_env.py#L118
 def _rewards(self, action: Action):
+    # these values act as "multipliers" of the same-named reward values
     rewards_flags = {
         "collision_reward": 0,
         "speed_interval_reward": 0,
@@ -53,6 +58,7 @@ def _rewards(self, action: Action):
         vehicles_in_front_x = list(filter(lambda x: x > vehicle.to_dict()["x"], controlled_vehicles_x))
         headway_distance = (vehicles_in_front_x[0] - vehicle.to_dict()["x"]) if len(vehicles_in_front_x) > 0 else 0
 
+        # to define the multiplier's values, the boolean value of some environment event/condition is translated to 0 or 1, and accumulated over all agents
         rewards_flags["collision_reward"] += float(vehicle.crashed)
         rewards_flags["speed_interval_reward"] += float(self.config["reward_speed_range"][0] < vehicle.speed < self.config["reward_speed_range"][1])
         rewards_flags["headway_reward"] += float(self.config["reward_headway_range"][0] < headway_distance < self.config["reward_headway_range"][1])
@@ -61,7 +67,7 @@ def _rewards(self, action: Action):
         rewards_flags["lane_change_reward"] += float(vehicle.lane_offset[2] != 0)
         rewards_flags["high_speed_reward"] += np.clip(scaled_speed, 0, 1)
     
-    # instead of on_road_reward being [0, len] it will stay in the [0,1] range, as the _reward function will multiply the final reward value by this constant
+    # instead of on_road_reward being [0, n_agents] it will stay in the [0,1] range, as the _reward function will multiply the final reward value by this constant
     rewards_flags["on_road_reward"] /= len(self.controlled_vehicles)
     return rewards_flags
 # substitute the function
@@ -85,9 +91,9 @@ default_config.update({
     "observation": {
         "type": "MultiAgentObservation",
         "observation_config": {
-            "type": "Kinematics",
-            "vehicles_count": 10,
-            "features": ["presence", "x", "y", "vx", "vy"],
+            "type": "Kinematics", # observation output is a (V+1) x F grid, where each row has F features of the agent (absolute values) or any of the other V closest vehicles to the agent (relative values to the agent)
+            "vehicles_count": 10, # V = 10
+            "features": ["presence", "x", "y", "vx", "vy"], # features: "presence of a vehicle", x position, y position, x velocity, y velocity
         }
     },
 
@@ -107,13 +113,13 @@ default_config.update({
     "vehicles_count": 30,
     "vehicles_density": 1,
     "initial_lane_id": None,
-    "duration": 60,  # seconds
+    "duration": 60,
     "ego_spacing": 2,
 
     # paper reward values
     "collision_reward": -40,
-    "speed_interval_reward": 10, "reward_speed_range": [103/3.6, 120/3.6],
-    "headway_reward": 10, "reward_headway_range": [50, 70],
+    "speed_interval_reward": 10, "reward_speed_range": [103/3.6, 120/3.6], # 103 to 120 kilometers-per-hour
+    "headway_reward": 10, "reward_headway_range": [50, 70], # 50 to 70 meters
     "on_road_reward": 1,
     "right_lane_reward": -1,
     "lane_change_reward": -1,
@@ -122,7 +128,10 @@ default_config.update({
     "offroad_terminal": False,
 })
 
-# custom definition of highway-env multi-agent envrionment that allows easier RL training with SB3
+
+"""
+custom definition of highway-env multi-agent envrionment that allows easier RL training with SB3
+"""
 class MultiAgentHighwayEnv(gym.Env):
     def __init__(self, original_env: HighwayEnv, n_agents: int, image_obs: bool, density: float | int):
         super(MultiAgentHighwayEnv, self).__init__()
@@ -175,6 +184,7 @@ class MultiAgentHighwayEnv(gym.Env):
         self.original_env.render()
 
 
+# returns the Highway-Env original environment with n_agents, and kinematics observation or image observation, as well as with a specific traffic density
 def get_env(n_agents: int = 1, image_obs: bool = False, density: float | int = 1):
     config = default_config.copy()
     config["controlled_vehicles"] = n_agents
@@ -192,7 +202,7 @@ def get_env(n_agents: int = 1, image_obs: bool = False, density: float | int = 1
     env = HighwayEnv(config=config, render_mode="rgb_array")
     return env
 
-
+# returns the custom environment "MultiAgentHighwayEnv" that wraps the original Highway-Env environment to allow for easier compatibility with SB3
 def get_sb3_env(n_agents: int, image_obs: bool, density: float | int):
     original_env = get_env(n_agents, image_obs, density)
     return MultiAgentHighwayEnv(original_env, n_agents, image_obs, density)

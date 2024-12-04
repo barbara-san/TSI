@@ -1,3 +1,8 @@
+"""
+This file defines the main routine of the project - a function that given the experiment ID runs the training of a model in an set environment, 
+given the respective experiment's configuration, logging all necessary metrics for the study and savint the trained model at the end.
+"""
+
 from envs import get_sb3_env
 from dqn import train_DQN
 from ppo import train_PPO
@@ -30,7 +35,7 @@ def experiment_config(experiment_id):
 
 
 if __name__ == "__main__":
-    experiment_id = 2
+    experiment_id = 0
     config_dict = experiment_config(experiment_id)
     pprint(config_dict)
 

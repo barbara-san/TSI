@@ -7,7 +7,7 @@ if __name__ == "__main__":
 
     n_agents = 3
     image_obs=False
-    env = get_sb3_env(n_agents=n_agents, image_obs=image_obs, density=2, init_headway_distance=80)
+    env = get_sb3_env(n_agents=n_agents, image_obs=image_obs, density=2)
 
     # Example cycle
     obs, info = env.reset()
