@@ -1,7 +1,11 @@
+"""
+This file implements a custom Logger that will save important values and metrics of the environment during training, which are needed to compare different experiment configurations of the project
+"""
+
 from stable_baselines3.common.callbacks import BaseCallback
 
 class CustomLogger(BaseCallback):
-    def __init__(self, verbose=0, model_type='DQN'):
+    def __init__(self, verbose: int = 0, model_type: str = 'DQN'):
         super(CustomLogger, self).__init__(verbose)
         self.verbose = verbose
         self.headway = {}
@@ -44,7 +48,7 @@ class CustomLogger(BaseCallback):
             elif self.model_type == 'PPO':
                 self.model._dump_logs(self.ep)
             else:
-                raise TypeError('Girl, Invalid Model Type')
+                raise TypeError('Invalid Model Type')
             self.ep += 1
             self.reset = not self.reset
 

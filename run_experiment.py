@@ -1,3 +1,8 @@
+"""
+This file defines the main routine of the project - a function that given the experiment ID runs the training of a model in an set environment, 
+given the respective experiment's configuration, logging all necessary metrics for the study and savint the trained model at the end.
+"""
+
 from envs import get_sb3_env
 from dqn import train_DQN
 from ppo import train_PPO
@@ -24,13 +29,11 @@ def experiment_config(experiment_id):
     density_vals = {"low":0.5, "medium":1, "high":1.5}
     config_dict["density"] = density_vals[exp_dict["density"]]
 
-    config_dict["initial_headway_distance"] = exp_dict["initial_headway_distance"]
-
     return config_dict
 
 
 if __name__ == "__main__":
-    experiment_id = 2
+    experiment_id = 0
     config_dict = experiment_config(experiment_id)
     pprint(config_dict)
 
@@ -38,7 +41,6 @@ if __name__ == "__main__":
         n_agents=config_dict["n_agents"],
         image_obs=config_dict["image_obs"],
         density=config_dict["density"],
-        init_headway_distance=config_dict["initial_headway_distance"],
     )
 
     device = "auto" ### "cpu" or "auto"

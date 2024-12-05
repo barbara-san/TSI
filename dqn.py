@@ -1,3 +1,9 @@
+"""
+This file implements two main components associate with Deep Q-Networks (DQNs) training:
+    - the definition of a custom convolutional feature extractor (`ConvFeatureExtractor`), which will learn to extract meaningful latent data out of the environment's observation
+    - the definition of a easy to use DQN training function (`train_DQN`), to ease up the execution of experiences that use DQN as the training algorithm
+"""
+
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 from stable_baselines3 import DQN
 import torch
@@ -10,6 +16,11 @@ from logger import CustomLogger
 
 from envs import MultiAgentHighwayEnv
 
+"""
+Stable-Baselines3 allows for custom neural network architecures to be used in their RL algorithms.
+The architecture has to be composed a Feature Extractor, which is usually between actor/critic networks, and a network that maps the features to actions/values.
+For this project we are using SB3's default MLP network architecture, but a custom feature extractor is defined, as seen below.
+"""
 
 class ConvFeatureExtractor(BaseFeaturesExtractor):
     def __init__(self, observation_space: spaces.Tuple, n_agents: int, channels_per_agent: int = 1, features_dim: int = 128):
@@ -55,6 +66,7 @@ def train_DQN(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_i
 
     channels_per_agent = 1 if not multi_agent_env.image_obs else multi_agent_env.original_env.config["observation"]["observation_config"]["stack_size"]
 
+    # definition of Feature Extractor's parameters and DQN algorithm hyperparameters
     features_dim = 256
     policy_kwargs = dict(
         features_extractor_class=ConvFeatureExtractor,
@@ -86,9 +98,10 @@ def train_DQN(multi_agent_env: MultiAgentHighwayEnv, total_timesteps: int, exp_i
             replay_buffer.add(*transition_tuple, infos=[{"TimeLimit.truncated": truncated}])
         del greedy_buffer
 
-    # train the model
+    # set custom logger
     logger = configure(f"logs/DQN/DQN_{exp_id}", ["csv", "tensorboard"])
     model.set_logger(logger)
 
+    # train the model
     model.learn(total_timesteps=total_timesteps, progress_bar=True, callback=CustomLogger(model_type='DQN'))
     model.save(path=f"./models/DQN/DQN_{exp_id}")
