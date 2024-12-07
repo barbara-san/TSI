@@ -46,3 +46,8 @@
   n_agents: 3
   density: medium
 
+- algorithm: PPO
+  with_greedy: false
+  observation_type: kinematics
+  n_agents: 5
+  density: medium
