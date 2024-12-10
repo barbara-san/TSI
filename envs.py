@@ -181,7 +181,7 @@ class MultiAgentHighwayEnv(gym.Env):
         return tuple(actions)
     
     def render(self):
-        self.original_env.render()
+        return self.original_env.render()
 
 
 # returns the Highway-Env original environment with n_agents, and kinematics observation or image observation, as well as with a specific traffic density
